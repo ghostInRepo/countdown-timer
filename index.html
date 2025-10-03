@@ -4,46 +4,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Countdown Timer</title>
+  <title>Document</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
   <div class="container">
-    <h1>Countdown Timer</h1>
-    <div class="target-date" id="targetDateDisplay">New Year 2025</div>
+    <header>
+      <h1>Countdown Timer</h1>
+      <div class="target-date" id="targetDateDisplay">December 31, 2025 23:59:59</div>
+    </header>
+
+    <div class="countdown-container">
+      <div class="time-unit">
+        <div class="time-value" id="days">00</div>
+        <div class="time-label">Days</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value" id="hours">00</div>
+        <div class="time-label">Hours</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value" id="minutes">00</div>
+        <div class="time-label">Minutes</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value" id="seconds">00</div>
+        <div class="time-label">Seconds</div>
+      </div>
+    </div>
+
+    <div class="message" id="completionMessage">🎉 Event Started! 🎉</div>
 
     <div class="input-section">
-      <input type="datetime-local" id="targetDateInput">
-      <button id="setDateBtn">Set Countdown</button>
+      <h2>Set Custom Countdown</h2>
+      <div class="date-input">
+        <input type="datetime-local" id="customDate" min="">
+        <button id="startButton"><i class="fas fa-play"></i> Start Countdown</button>
+      </div>
+      <button id="resetButton"><i class="fas fa-redo"></i> Reset to Default</button>
     </div>
-
-    <div class="countdown">
-      <div class="time-unit">
-        <div class="value" id="days">00</div>
-        <div class="label">Days</div>
-      </div>
-
-      <div class="time-unit">
-        <div class="value" id="hours">00</div>
-        <div class="label">Hours</div>
-      </div>
-
-      <div class="time-unit">
-        <div class="value" id="minutes">00</div>
-        <div class="label">Minutes</div>
-      </div>
-
-      <div class="time-unit">
-        <div class="value" id="seconds">00</div>
-        <div class="label">Seconds</div>
-      </div>
-    </div>
-
-    <div class="message" id="message"></div>
 
     <div class="footer">
-      Enter a future date and time to start the countdown
+      <p>Timer updates every second • Timezone: Your local time</p>
     </div>
   </div>
 

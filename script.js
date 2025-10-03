@@ -1,58 +1,42 @@
-// DOM Elements
-const targetDateInput = document.getElementById("targetDateInput");
-const setDateBtn = document.getElementById("setDateBtn");
-const targetDateDisplay = document.getElementById("targetDateDisplay");
-const daysEl = document.getElementById("days");
-const hoursEl = document.getElementById("hours");
-const minutesEl = document.getElementById("minutes");
-const secondsEl = document.getElementById("seconds");
-const messageEl = document.getElementById("message");
-
-// Set default target date (New Year 2025)
-let targetDate = new Date("January 1, 2025 00:00:00").getTime();
-updateTargetDateDisplay();
-
 // Set minimum date to current date
 const now = new Date();
-const minDate = now.toISOString().slice(0, 16);
-targetDateInput.min = minDate;
+const minDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+  .toISOString()
+  .slice(0, 16);
+document.getElementById("customDate").min = minDate;
 
-// Set initial input value to default target date
-const defaultDate = new Date(targetDate);
-targetDateInput.value = defaultDate.toISOString().slice(0, 16);
+// Default target date (December 31, 2025 23:59:59)
+let targetDate = new Date("December 31, 2025 23:59:59").getTime();
 
-// Update target date display
-function updateTargetDateDisplay() {
-  const date = new Date(targetDate);
-  const options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
+// DOM elements
+const daysElement = document.getElementById("days");
+const hoursElement = document.getElementById("hours");
+const minutesElement = document.getElementById("minutes");
+const secondsElement = document.getElementById("seconds");
+const completionMessage = document.getElementById("completionMessage");
+const targetDateDisplay = document.getElementById("targetDateDisplay");
+const customDateInput = document.getElementById("customDate");
+const startButton = document.getElementById("startButton");
+const resetButton = document.getElementById("resetButton");
 
-  targetDateDisplay.textContent = date.toLocaleDateString("en-US", options);
+// Format number to two digits
+function formatNumber(num) {
+  return num < 10 ? `0${num}` : num;
 }
 
-// Format time value to always have two digits
-function formatTime(value) {
-  return value < 10 ? `0${value}` : value;
-}
-
-// Update countdown
+// Update countdown display
 function updateCountdown() {
   const now = new Date().getTime();
   const distance = targetDate - now;
 
-  // Check if countdown has ended
-  if (distance < 0) {
+  if (distance <= 0) {
+    // Countdown finished
     clearInterval(countdownInterval);
-    daysEl.textContent = "00";
-    hoursEl.textContent = "00";
-    minutesEl.textContent = "00";
-    secondsEl.textContent = "00";
-    messageEl.textContent = "Countdown Finished!";
+    daysElement.textContent = "00";
+    hoursElement.textContent = "00";
+    minutesElement.textContent = "00";
+    secondsElement.textContent = "00";
+    completionMessage.style.display = "block";
     return;
   }
 
@@ -64,35 +48,80 @@ function updateCountdown() {
   const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-  // Update Display
-  daysEl.textContent = formatTime(days);
-  hoursEl.textContent = formatTime(hours);
-  minutesEl.textContent = formatTime(minutes);
-  secondsEl.textContent = formatTime(seconds);
+  // Update display with animation
+  updateWithAnimation(daysElement, formatNumber(days));
+  updateWithAnimation(hoursElement, formatNumber(hours));
+  updateWithAnimation(minutesElement, formatNumber(minutes));
+  updateWithAnimation(secondsElement, formatNumber(seconds));
 
-  // Clear message when countdown is active
-  messageEl.textContent = "";
+  // Hide completion message if it was shown
+  completionMessage.style.display = "none";
 }
 
-// Set new target date
-setDateBtn.addEventListener("click", () => {
-  const inputDate = new Date(targetDateInput.value).getTime();
-  const now = new Date().getTime();
+// Update element with flip animation
+function updateWithAnimation(element, newValue) {
+  if (element.textContent !== newValue) {
+    element.classList.remove("flip");
+    // Trigger reflow
+    void element.offsetWidth;
+    element.textContent = newValue;
+    element.classList.add("flip");
+  }
+}
 
-  if (inputDate <= now) {
-    messageEl.textContent = "Please select a future date.";
+// Set target date display
+function setTargetDateDisplay() {
+  const date = new Date(targetDate);
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  targetDateDisplay.textContent = date.toLocaleString("en-US", options);
+}
+
+// Initialize countdown
+let countdownInterval = setInterval(updateCountdown, 1000);
+setTargetDateDisplay();
+updateCountdown();
+
+// Event listeners
+startButton.addEventListener("click", () => {
+  const customDateValue = customDateInput.value;
+  if (!customDateValue) {
+    alert("Please select a date and time");
     return;
   }
 
-  targetDate = inputDate;
-  updateTargetDateDisplay();
+  // Convert to timestamp
+  targetDate = new Date(customDateValue).getTime();
+
+  // Validate date is in the future
+  if (targetDate <= new Date().getTime()) {
+    alert("Please select a future date and time");
+    return;
+  }
+
+  setTargetDateDisplay();
   updateCountdown();
 
-  // Clear old interval and start a new one
+  // Restart interval
   clearInterval(countdownInterval);
   countdownInterval = setInterval(updateCountdown, 1000);
 });
 
-// Initialize countdown
-countdownInterval = setInterval(updateCountdown, 1000);
-updateCountdown();
+resetButton.addEventListener("click", () => {
+  // Reset to default date
+  targetDate = new Date("December 31, 2025 23:59:59").getTime();
+  customDateInput.value = "";
+  setTargetDateDisplay();
+  updateCountdown();
+
+  // Restart interval
+  clearInterval(countdownInterval);
+  countdownInterval = setInterval(updateCountdown, 1000);
+});
