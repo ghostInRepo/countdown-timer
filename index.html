@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown Timer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Countdown Timer</h1>
+    <div class="target-date" id="targetDateDisplay">New Year 2025</div>
+
+    <div class="input-section">
+      <input type="datetime-local" id="targetDateInput">
+      <button id="setDateBtn">Set Countdown</button>
+    </div>
+
+    <div class="countdown">
+      <div class="time-unit">
+        <div class="value" id="days">00</div>
+        <div class="label">Days</div>
+      </div>
+
+      <div class="time-unit">
+        <div class="value" id="hours">00</div>
+        <div class="label">Hours</div>
+      </div>
+
+      <div class="time-unit">
+        <div class="value" id="minutes">00</div>
+        <div class="label">Minutes</div>
+      </div>
+
+      <div class="time-unit">
+        <div class="value" id="seconds">00</div>
+        <div class="label">Seconds</div>
+      </div>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <div class="footer">
+      Enter a future date and time to start the countdown
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
